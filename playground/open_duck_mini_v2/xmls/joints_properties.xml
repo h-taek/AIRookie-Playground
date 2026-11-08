@@ -1,0 +1,28 @@
+<!-- 이 파일은 어디에서도 include 되지 않는다. 값도 전부 낡았다. 쓰지 마라.
+
+     확정값은 두 로봇 XML(open_duck_mini_v2.xml, open_duck_mini_v2_backlash.xml)의
+     인라인 <default> 블록에 있다. 여기 적힌 값과 확정값은 다음과 같이 갈린다.
+
+     | 항목         | 이 파일 | 확정값                     | 근거   |
+     |--------------|---------|----------------------------|--------|
+     | kp           | 17.8    | 17.11 (backlash) / 13.37   | M-05b  |
+     | forcerange   | ±3.35   | ±1.912                     | M-05a  |
+     | damping      | 0.60    | 0.56                       | M-05b  |
+     | frictionloss | 0.052   | 0.068                      | M-11   |
+     | armature     | 0.028   | 0.027                      | M-11   |
+
+     이 파일을 include 하면 서보 토크가 실물의 1.75 배가 되어 시뮬이 실물보다
+     훨씬 잘 걷는다. 그 정책은 실물에서 무릎이 버티지 못한다.
+     삭제하지 않고 남겨 둔 이유는 원본 저장소와의 diff 를 줄이기 위해서다. -->
+<default>
+    <default class="sts3215">
+        <geom contype="0" conaffinity="0"/>
+        <joint damping="0.60" frictionloss="0.052" armature="0.028"/>
+        <position kp="17.8" kv="0.0" forcerange="-3.35 3.35"/>
+    </default>
+    <default class="backlash">
+        <!-- +/- 0.5° of backlash -->
+        <joint damping="0.01" frictionloss="0" armature="0.01" limited="true"
+            range="-0.008726646259971648 0.008726646259971648"/>
+    </default>
+</default>

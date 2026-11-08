@@ -1,0 +1,28 @@
+AIRookie_Playground
+
+This repository is derived from the following projects. Their authors' commit
+history is not preserved here; the original repositories remain the authoritative
+record of their work.
+
+1. Open Duck Playground
+   https://github.com/apirrone/Open_Duck_Playground
+   Authors: Antoine Pirrone, Steve Nguyen and contributors
+   The training environment under playground/ started from this repository.
+   The upstream repository does not declare a license.
+
+2. Open Duck reference motion generator
+   https://github.com/apirrone/Open_Duck_reference_motion_generator
+   Authors: Antoine Pirrone and contributors
+   Vendored under tools/reference_motion_generator/ (upstream commit 3d7bc6f).
+   The upstream repository does not declare a license.
+
+3. Open Duck Mini
+   https://github.com/apirrone/Open_Duck_Mini
+   Licensed under the Apache License, Version 2.0 (see LICENSE-APACHE).
+   The robot description (MJCF, URDF) and the meshes under
+   tools/reference_motion_generator/open_duck_reference_motion_generator/robots/
+   are derived from this project. The training meshes (cad3_*.stl) were replaced
+   with the AI Rookie exterior.
+
+4. MuJoCo Playground (inspiration for the environment layout)
+   https://github.com/kscalelabs/mujoco_playground

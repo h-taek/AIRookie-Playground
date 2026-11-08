@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+<!-- Generated using onshape-to-robot -->
+<!-- Onshape document_id: 64074dfcfa379b37d8a47762 -->
+<mujoco model="open_duck_mini_v2">
+
+  <option iterations="1" ls_iterations="5">
+    <flag eulerdamp="disable"/>
+  </option>
+  <compiler angle="radian" meshdir="assets"/>
+
+  <!-- <option noslip_iterations="1"/>
+  <compiler angle="radian" meshdir="assets" autolimits="true"/> -->
+  <default>
+    <default class="open_duck_mini_v2">
+      <joint frictionloss="0.1" armature="0.005"/>
+      <position kp="50" dampratio="1"/>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+      </default>
+      <default class="collision">
+        <geom group="3"/>
+      </default>
+    </default>
+  </default>
+  <!-- Additional sensors.xml -->
+  <sensor>
+    <gyro site="imu" name="gyro"/>
+    <velocimeter site="imu" name="local_linvel"/>
+    <accelerometer site="imu" name="accelerometer"/>
+    <framezaxis objtype="site" objname="imu" name="upvector"/>
+    <framexaxis objtype="site" objname="imu" name="forwardvector"/>
+    <framelinvel objtype="site" objname="imu" name="global_linvel"/>
+    <frameangvel objtype="site" objname="imu" name="global_angvel"/>
+    <framepos objtype="site" objname="imu" name="position"/>
+    <framequat objtype="site" objname="imu" name="orientation"/>
+    <framelinvel objtype="site" objname="right_foot" name="right_foot_global_linvel"/>
+    <framelinvel objtype="site" objname="left_foot" name="left_foot_global_linvel"/>
+    <framexaxis objtype="site" objname="left_foot" name="left_foot_upvector"/>
+    <framexaxis objtype="site" objname="right_foot" name="right_foot_upvector"/>
+    <framepos objtype="site" objname="left_foot" name="left_foot_pos"/>
+    <framepos objtype="site" objname="right_foot" name="right_foot_pos"/>
+  </sensor>
+  <!-- Additional joints_properties.xml -->
+  <default>
+    <default class="sts3215">
+      <geom contype="0" conaffinity="0"/>
+      <joint damping="0.56" frictionloss="0.068" armature="0.027"/>
+      <!-- <position kp="17.12" kv="0.0" forcerange="-3.23 3.23"/> -->
+      <!-- forcerange = 스톨 토크 1.912 (M-05a). 11 차에 70 % (1.338) 로 내렸다가
+           되돌렸다. 근거 없는 값이었고 결과도 실패였다 - 자세한 것은
+           open_duck_mini_v2_backlash.xml 의 같은 자리 주석에 있다.
+           학습과 평가는 backlash 판을 쓰므로 이 판은 참고용이지만, 두 판이
+           어긋나면 나중에 반드시 사고가 나므로 같이 맞춘다. -->
+      <position kp="13.37" kv="0.0" forcerange="-1.912 1.912"/>
+    </default>
+    <default class="backlash">
+      <!-- +/- 0.5° of backlash -->
+      <joint damping="0.01" frictionloss="0" armature="0.01" limited="true"
+        range="-0.008726646259971648 0.008726646259971648"/>
+    </default>
+  </default>
+  <worldbody>
+    <body name="base" pos="0 0 0.22">
+      <freejoint name="floating_base"/>
+      <!-- IMU 위치: CAD 부품 trunk_assembly/NAUO11 무게중심 (M-08) -->
+      <site name="imu" pos="-0.08711 2.47e-07 0.043491"/>
+      <!-- Link trunk_assembly -->
+      <body name="trunk_assembly" pos="0 0 0.0" quat="1 0 0 0" childclass="open_duck_mini_v2">
+        <geom class="visual" mesh="cad3_trunk_assembly_other" material="cad3_other"/>
+        <geom class="visual" mesh="cad3_trunk_assembly_print" material="cad3_print"/>
+        <inertial pos="-0.0471231 0.00035533 0.0463596" mass="1.28687"
+          fullinertia="0.00302522 0.00812792 0.00758421 -3.24386e-05 -0.000150428 -1.18497e-06"/>
+        <!-- Frame trunk -->
+        <site group="0" name="trunk" pos="-0.024 -2.41127e-16 0.0881909" quat="1 -2.77556e-17 -0 -0"/>
+        <!-- Frame imu -->
+        <!-- <site group="0" name="imu" pos="-0.08711 1.249e-16 0.0422909" quat="1 -7.03105e-17 -2.77556e-17
+        -3.14419e-16"/> -->
+        <!-- Link hip_roll_assembly -->
+        <body name="hip_roll_assembly" pos="-0.019 0.035 0.0459409" quat="1 -1.17663e-16 -1.09357e-14 2.77556e-17">
+          <geom class="visual" mesh="cad3_hip_roll_assembly_other" material="cad3_other"/>
+          <geom class="visual" mesh="cad3_hip_roll_assembly_print" material="cad3_print"/>
+          <!-- Joint from trunk_assembly to hip_roll_assembly -->
+          <joint name="left_hip_yaw" type="hinge" range="-0.2312561259 0.1090830782" class="sts3215"/>
+          <inertial pos="0.000722783 -1.08681e-06 -0.0334701" mass="0.0779599"
+            fullinertia="2.76385e-05 3.39818e-05 1.7957e-05 3.02005e-09 -3.19736e-07 -9.03649e-09"/>
+          <!-- Link left_roll_to_pitch_assembly -->
+          <body name="left_roll_to_pitch_assembly" pos="0.01905 4.61436e-15 -0.046015" quat="0.5 -0.5 -0.5 0.5">
+            <geom class="visual" mesh="cad3_left_roll_to_pitch_assembly_other" material="cad3_other"/>
+            <geom class="visual" mesh="cad3_left_roll_to_pitch_assembly_print" material="cad3_print"/>
+            <!-- Joint from hip_roll_assembly to left_roll_to_pitch_assembly -->
+            <joint name="left_hip_roll" type="hinge" range="-0.3272492347 0.3752457892" class="sts3215"/>
+            <inertial pos="0.0510552 -0.000383208 0.0206998" mass="0.0854355"
+              fullinertia="2.75001e-05 4.73049e-05 3.25965e-05 1.20979e-07 -9.77518e-07 -1.21207e-07"/>
+            <!-- Link knee_and_ankle_assembly -->
+            <body name="knee_and_ankle_assembly" pos="0.07415 -3.25261e-17 0.03511"
+              quat="8.49887e-24 -0.707107 -1.11022e-16 0.707107">
+              <geom class="visual" mesh="cad3_knee_and_ankle_assembly_other" material="cad3_other"/>
+              <geom class="visual" mesh="cad3_knee_and_ankle_assembly_print" material="cad3_print"/>
+              <!-- Joint from left_roll_to_pitch_assembly to knee_and_ankle_assembly -->
+              <joint name="left_hip_pitch" type="hinge" range="-0.9992009968 0.1919862177" class="sts3215"/>
+              <inertial pos="0.00146596 -0.0360446 0.0129503" mass="0.132404"
+                fullinertia="0.000226957 0.000101492 0.000264517 -2.7064e-05 3.54377e-06 2.15081e-05"/>
+              <!-- Link knee_and_ankle_assembly_2 -->
+              <body name="knee_and_ankle_assembly_2" pos="0 -0.07865 0.0001"
+                quat="1 1.11022e-16 1.11022e-16 -2.64698e-23">
+                <geom class="visual" mesh="cad3_knee_and_ankle_assembly_2_other" material="cad3_other"/>
+                <geom class="visual" mesh="cad3_knee_and_ankle_assembly_2_print" material="cad3_print"/>
+                <!-- Joint from knee_and_ankle_assembly to knee_and_ankle_assembly_2 -->
+                <joint name="left_knee" type="hinge" range="-0.2967059728 1.762782545" class="sts3215"/>
+                <inertial pos="1.31065e-06 -0.0583098 0.0180926" mass="0.0832997"
+                  fullinertia="5.73242e-05 2.27009e-05 4.66335e-05 9.83894e-09 2.9659e-09 1.94257e-07"/>
+                <!-- Link foot_assembly -->
+                <body name="foot_assembly" pos="1.8735e-16 -0.07865 0.0001" quat="1 2.77556e-16 5.55112e-16 1.52656e-16">
+                  <geom class="visual" mesh="cad3_foot_assembly_other" material="cad3_other"/>
+                  <geom class="visual" mesh="cad3_foot_assembly_print" material="cad3_print"/>
+                  <!-- Joint from knee_and_ankle_assembly_2 to foot_assembly -->
+                  <joint name="left_ankle" type="hinge" range="-1.108284075 0.8028514559" class="sts3215"/>
+                  <inertial pos="0.0102022 -0.0234616 0.0186054" mass="0.0662126"
+                    fullinertia="1.81855e-05 6.16345e-05 5.4804e-05 1.8116e-06 -2.58069e-08 1.72896e-07"/>
+                  <geom type="mesh" class="collision" mesh="cad3_foot_assembly_sole" material="cad3_other" name="left_foot_bottom_tpu"/>
+                  <!-- Frame left_foot -->
+                  <site group="0" name="left_foot" pos="0.0005 -0.036225 0.01955"
+                    quat="0.707107 -0.707107 -0 1.72494e-18"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+        <!-- Link neck_pitch_assembly -->
+        <body name="neck_pitch_assembly" pos="0.001 0.01915 0.0900009" quat="0.707107 0.707107 -7.88258e-15 7.79925e-15">
+          <geom class="visual" mesh="cad3_neck_pitch_assembly_other" material="cad3_other"/>
+          <geom class="visual" mesh="cad3_neck_pitch_assembly_print" material="cad3_print"/>
+          <!-- Joint from trunk_assembly to neck_pitch_assembly -->
+          <joint name="neck_pitch" type="hinge" range="-0.4537856055 0.2617993878" class="sts3215"/>
+          <inertial pos="-1.51201e-06 0.0503481 0.0182257" mass="0.0747561"
+            fullinertia="3.88274e-05 2.00242e-05 2.9414e-05 9.26982e-09 -2.84182e-09 2.40488e-08"/>
+          <!-- Link head_pitch_to_yaw -->
+          <body name="head_pitch_to_yaw" pos="-2.9924e-17 0.066 -6.93889e-18" quat="1 -1.7203e-16 0 1.10553e-17">
+            <geom class="visual" mesh="cad3_head_pitch_to_yaw_print" material="cad3_print"/>
+            <!-- Joint from neck_pitch_assembly to head_pitch_to_yaw -->
+            <joint name="head_pitch" type="hinge" range="-0.7853981634 0.6239552076" class="sts3215"/>
+            <inertial pos="-0.00766183 0.026218 0.0186679" mass="0.0117474"
+              fullinertia="6.53859e-06 3.22263e-06 5.5671e-06 9.37757e-07 2.12221e-08 -5.84424e-08"/>
+            <!-- Link neck_yaw_assembly -->
+            <body name="neck_yaw_assembly" pos="-4.33681e-19 0.057 0.01905"
+              quat="0.707107 -0.707107 1.11022e-16 -5.88785e-17">
+              <geom class="visual" mesh="cad3_neck_yaw_assembly_other" material="cad3_other"/>
+              <geom class="visual" mesh="cad3_neck_yaw_assembly_print" material="cad3_print"/>
+              <!-- Joint from head_pitch_to_yaw to neck_yaw_assembly -->
+              <joint name="head_yaw" type="hinge" range="-0.6108652382 0.6108652382" class="sts3215"/>
+              <inertial pos="0.00723403 1.50049e-06 -0.0203498" mass="0.0832997"
+                fullinertia="2.55431e-05 5.14939e-05 4.73554e-05 8.4734e-09 -3.05145e-06 -3.24236e-09"/>
+              <!-- Link head_assembly -->
+              <body name="head_assembly" pos="0.04095 2.1764e-16 -0.01915"
+                quat="0.707107 2.89132e-14 -0.707107 -2.86438e-14">
+                <geom class="visual" mesh="cad3_head_assembly_other" material="cad3_other"/>
+                <geom class="visual" name="ear_L" mesh="cad3_head_assembly_ear_L" material="cad3_print"/>
+                <geom class="visual" name="ear_R" mesh="cad3_head_assembly_ear_R" material="cad3_print"/>
+                <geom class="visual" name="eye_L" mesh="cad3_head_assembly_eye_L" material="cad3_other"/>
+                <geom class="visual" name="eye_R" mesh="cad3_head_assembly_eye_R" material="cad3_other"/>
+                <site name="ear_L_axis" pos="0.0125999 0.0956256 0.000955453" zaxis="-8.10851e-14 1 -3.36885e-16"/>
+                <site name="ear_R_axis" pos="0.0125999 -0.0956244 0.000955453" zaxis="8.10851e-14 -1 3.36885e-16"/>
+                <!-- Joint from neck_yaw_assembly to head_assembly -->
+                <joint name="head_roll" type="hinge" range="-0.6108652382 0.5803219763" class="sts3215"/>
+                <inertial pos="0.0146727 0.00139681 0.0163173" mass="0.369701"
+                  fullinertia="0.00232509 0.00134352 0.00141027 3.95068e-06 0.000106581 -3.94305e-05"/>
+                <!-- 머리 카메라. 신형 CAD 3차 IMX219 렌즈 앞 중심과 광축에서 왔다
+                     (AIRookie_CAD/scripts/apply_xml.py). 질량·형상·자유도가 없어 물리에 영향을 주지
+                     아니하므로 이 모델 위에서 낸 정책 판정은 그대로 유효하다.
+                     축: 카메라 정면(-z)이 몸체 -z, 위(+y)가 몸체 +x,
+                     오른쪽(+x)이 몸체 -y 다. fovy 는 실물 IMX219 의
+                     세로 화각이다 (Runtime 계약 6-1). -->
+                <camera name="head_cam" pos="0.0184872 5.85e-07 -0.0607445"
+                  xyaxes="0 -1 0  1 0 0" fovy="51.1"/>
+                <!-- Frame head -->
+                <site group="0" name="head" pos="0.04245 1.88922e-17 0.03595"
+                  quat="0.707107 2.48509e-16 0.707107 5.27356e-16"/>
+              </body>
+            </body>
+          </body>
+        </body>
+        <!-- Link hip_roll_assembly_2 -->
+        <body name="hip_roll_assembly_2" pos="-0.019 -0.035 0.0459409" quat="1 -4.25414e-16 -1.07137e-14 2.77556e-17">
+          <geom class="visual" mesh="cad3_hip_roll_assembly_2_other" material="cad3_other"/>
+          <geom class="visual" mesh="cad3_hip_roll_assembly_2_print" material="cad3_print"/>
+          <!-- Joint from trunk_assembly to hip_roll_assembly_2 -->
+          <joint name="right_hip_yaw" type="hinge" range="-0.1221730476 0.2487094184" class="sts3215"/>
+          <inertial pos="0.000722783 -1.08681e-06 -0.0334701" mass="0.0779599"
+            fullinertia="2.76385e-05 3.39818e-05 1.7957e-05 3.02005e-09 -3.19736e-07 -9.03649e-09"/>
+          <!-- Link right_roll_to_pitch_assembly -->
+          <body name="right_roll_to_pitch_assembly" pos="0.01905 4.05787e-14 -0.046015" quat="0.5 -0.5 -0.5 0.5">
+            <geom class="visual" mesh="cad3_right_roll_to_pitch_assembly_other" material="cad3_other"/>
+            <geom class="visual" mesh="cad3_right_roll_to_pitch_assembly_print" material="cad3_print"/>
+            <!-- Joint from hip_roll_assembly_2 to right_roll_to_pitch_assembly -->
+            <joint name="right_hip_roll" type="hinge" range="-0.3752457892 0.3272492347" class="sts3215"/>
+            <inertial pos="-0.0510547 -0.000385667 0.0206998" mass="0.0854355"
+              fullinertia="2.75e-05 4.73049e-05 3.25964e-05 -1.27983e-07 9.77518e-07 -1.02774e-07"/>
+            <!-- Link knee_and_ankle_assembly_3 -->
+            <body name="knee_and_ankle_assembly_3" pos="-0.07415 2.48437e-15 0.03511"
+              quat="0.707107 6.41892e-22 0.707107 -2.22045e-16">
+              <geom class="visual" mesh="cad3_knee_and_ankle_assembly_3_other" material="cad3_other"/>
+              <geom class="visual" mesh="cad3_knee_and_ankle_assembly_3_print" material="cad3_print"/>
+              <!-- Joint from right_roll_to_pitch_assembly to knee_and_ankle_assembly_3 -->
+              <joint name="right_hip_pitch" type="hinge" range="-0.1919862177 0.9992009968" class="sts3215"/>
+              <inertial pos="0.00146438 0.0360446 0.0129508" mass="0.132404"
+                fullinertia="0.000226957 0.000101493 0.000264518 2.70884e-05 3.53892e-06 -2.15081e-05"/>
+              <!-- Link knee_and_ankle_assembly_4 -->
+              <body name="knee_and_ankle_assembly_4" pos="1.38778e-16 0.07865 0.0001"
+                quat="1.32068e-16 1 -1.10334e-26 3.55346e-22">
+                <geom class="visual" mesh="cad3_knee_and_ankle_assembly_4_other" material="cad3_other"/>
+                <geom class="visual" mesh="cad3_knee_and_ankle_assembly_4_print" material="cad3_print"/>
+                <!-- Joint from knee_and_ankle_assembly_3 to knee_and_ankle_assembly_4 -->
+                <joint name="right_knee" type="hinge" range="-0.2967059728 1.762782545" class="sts3215"/>
+                <inertial pos="-1.21099e-06 -0.0583098 -0.0180931" mass="0.0832997"
+                  fullinertia="5.73242e-05 2.27009e-05 4.66335e-05 -9.83897e-09 2.96602e-09 -1.94257e-07"/>
+                <!-- Link foot_assembly_2 -->
+                <body name="foot_assembly_2" pos="1.32533e-15 -0.07865 0.0001"
+                  quat="1 3.88578e-16 -3.33067e-16 5.55111e-16">
+                  <geom class="visual" mesh="cad3_foot_assembly_2_other" material="cad3_other"/>
+                  <geom class="visual" mesh="cad3_foot_assembly_2_print" material="cad3_print"/>
+                  <!-- Joint from knee_and_ankle_assembly_4 to foot_assembly_2 -->
+                  <joint name="right_ankle" type="hinge" range="-1.108284075 0.8028514559" class="sts3215"/>
+                  <inertial pos="0.0102022 -0.0234616 -0.0184946" mass="0.0662126"
+                    fullinertia="1.81855e-05 6.16345e-05 5.4804e-05 1.8116e-06 -2.58069e-08 1.72896e-07"/>
+                  <!-- 오른발 geom / site 의 로컬 z 를 내려 왼발의 거울상으로
+                       맞추었다. 근거와 경위는 open_duck_mini_v2_backlash.xml 의
+                       같은 자리 주석에 있다. 학습과 평가는 backlash 판을 쓰므로
+                       이 판은 참고용이지만, 두 판이 어긋나면 반드시 사고가 난다. -->
+                  <geom type="mesh" class="collision" mesh="cad3_foot_assembly_2_sole" material="cad3_other" name="right_foot_bottom_tpu"/>
+                  <!-- Frame right_foot -->
+                  <site group="0" name="right_foot" pos="0.0005 -0.036225 -0.01975"
+                    quat="0.707107 -0.707107 -0 1.26645e-25"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <asset>
+    <!-- 오른다리 시각 부품용 거울 mesh. 원본은 오른다리에도 왼쪽
+         전용 mesh 를 그대로 써서 형상이 좌우 반대였다. 거울상은
+         회전으로 못 만들기에 한 축을 뒤집고 자세로 되돌린다.
+         충돌 mesh 는 포함하지 않는다 - 물리가 바뀐다. -->
+    <mesh name="cad3_trunk_assembly_other" file="cad3_trunk_assembly_other.stl"/>
+    <mesh name="cad3_trunk_assembly_print" file="cad3_trunk_assembly_print.stl"/>
+    <mesh name="cad3_hip_roll_assembly_other" file="cad3_hip_roll_assembly_other.stl"/>
+    <mesh name="cad3_hip_roll_assembly_print" file="cad3_hip_roll_assembly_print.stl"/>
+    <mesh name="cad3_hip_roll_assembly_2_other" file="cad3_hip_roll_assembly_2_other.stl"/>
+    <mesh name="cad3_hip_roll_assembly_2_print" file="cad3_hip_roll_assembly_2_print.stl"/>
+    <mesh name="cad3_neck_pitch_assembly_other" file="cad3_neck_pitch_assembly_other.stl"/>
+    <mesh name="cad3_neck_pitch_assembly_print" file="cad3_neck_pitch_assembly_print.stl"/>
+    <mesh name="cad3_right_roll_to_pitch_assembly_other" file="cad3_right_roll_to_pitch_assembly_other.stl"/>
+    <mesh name="cad3_right_roll_to_pitch_assembly_print" file="cad3_right_roll_to_pitch_assembly_print.stl"/>
+    <mesh name="cad3_left_roll_to_pitch_assembly_other" file="cad3_left_roll_to_pitch_assembly_other.stl"/>
+    <mesh name="cad3_left_roll_to_pitch_assembly_print" file="cad3_left_roll_to_pitch_assembly_print.stl"/>
+    <mesh name="cad3_knee_and_ankle_assembly_other" file="cad3_knee_and_ankle_assembly_other.stl"/>
+    <mesh name="cad3_knee_and_ankle_assembly_print" file="cad3_knee_and_ankle_assembly_print.stl"/>
+    <mesh name="cad3_knee_and_ankle_assembly_4_other" file="cad3_knee_and_ankle_assembly_4_other.stl"/>
+    <mesh name="cad3_knee_and_ankle_assembly_4_print" file="cad3_knee_and_ankle_assembly_4_print.stl"/>
+    <mesh name="cad3_knee_and_ankle_assembly_3_other" file="cad3_knee_and_ankle_assembly_3_other.stl"/>
+    <mesh name="cad3_knee_and_ankle_assembly_3_print" file="cad3_knee_and_ankle_assembly_3_print.stl"/>
+    <mesh name="cad3_knee_and_ankle_assembly_2_other" file="cad3_knee_and_ankle_assembly_2_other.stl"/>
+    <mesh name="cad3_knee_and_ankle_assembly_2_print" file="cad3_knee_and_ankle_assembly_2_print.stl"/>
+    <mesh name="cad3_foot_assembly_other" file="cad3_foot_assembly_other.stl"/>
+    <mesh name="cad3_foot_assembly_print" file="cad3_foot_assembly_print.stl"/>
+    <mesh name="cad3_foot_assembly_sole" file="cad3_foot_assembly_sole.stl"/>
+    <mesh name="cad3_foot_assembly_2_other" file="cad3_foot_assembly_2_other.stl"/>
+    <mesh name="cad3_foot_assembly_2_print" file="cad3_foot_assembly_2_print.stl"/>
+    <mesh name="cad3_foot_assembly_2_sole" file="cad3_foot_assembly_2_sole.stl"/>
+    <mesh name="cad3_head_pitch_to_yaw_print" file="cad3_head_pitch_to_yaw_print.stl"/>
+    <mesh name="cad3_neck_yaw_assembly_other" file="cad3_neck_yaw_assembly_other.stl"/>
+    <mesh name="cad3_neck_yaw_assembly_print" file="cad3_neck_yaw_assembly_print.stl"/>
+    <mesh name="cad3_head_assembly_ear_L" file="cad3_head_assembly_ear_L.stl"/>
+    <mesh name="cad3_head_assembly_ear_R" file="cad3_head_assembly_ear_R.stl"/>
+    <mesh name="cad3_head_assembly_eye_L" file="cad3_head_assembly_eye_L.stl"/>
+    <mesh name="cad3_head_assembly_eye_R" file="cad3_head_assembly_eye_R.stl"/>
+    <mesh name="cad3_head_assembly_other" file="cad3_head_assembly_other.stl"/>
+    <material name="cad3_print" rgba="0.92 0.92 0.92 1"/>
+    <material name="cad3_other" rgba="0.25 0.25 0.27 1"/>
+  </asset>
+  <actuator>
+    <position class="sts3215" name="left_hip_yaw" joint="left_hip_yaw" inheritrange="1"/>
+    <position class="sts3215" name="left_hip_roll" joint="left_hip_roll" inheritrange="1"/>
+    <position class="sts3215" name="left_hip_pitch" joint="left_hip_pitch" inheritrange="1"/>
+    <position class="sts3215" name="left_knee" joint="left_knee" inheritrange="1"/>
+    <position class="sts3215" name="left_ankle" joint="left_ankle" inheritrange="1"/>
+    <position class="sts3215" name="neck_pitch" joint="neck_pitch" inheritrange="1"/>
+    <position class="sts3215" name="head_pitch" joint="head_pitch" inheritrange="1"/>
+    <position class="sts3215" name="head_yaw" joint="head_yaw" inheritrange="1"/>
+    <position class="sts3215" name="head_roll" joint="head_roll" inheritrange="1"/>
+    <position class="sts3215" name="right_hip_yaw" joint="right_hip_yaw" inheritrange="1"/>
+    <position class="sts3215" name="right_hip_roll" joint="right_hip_roll" inheritrange="1"/>
+    <position class="sts3215" name="right_hip_pitch" joint="right_hip_pitch" inheritrange="1"/>
+    <position class="sts3215" name="right_knee" joint="right_knee" inheritrange="1"/>
+    <position class="sts3215" name="right_ankle" joint="right_ankle" inheritrange="1"/>
+  </actuator>
+  <equality/>
+</mujoco>

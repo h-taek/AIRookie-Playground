@@ -1,0 +1,29 @@
+.venv/
+.pytest_cache/
+Open_Duck_Playground.egg-info/*
+uv.lock
+__pycache__/
+playground/sigmaban2019/
+playground/open_duck_mini_v2_skate/
+robot_saved_obs.pkl
+mujoco_saved_obs.pkl
+checkpoints/
+.tmp/
+*.TXT
+# 시범 동작 생성기 산출물 (tools/reference_motion_generator/)
+tools/reference_motion_generator/recordings*/
+tools/reference_motion_generator/.venv/
+.DS_Store
+eval_out/
+
+# 실물 기록 맞춤 실행 산출물 (real_fit/run.sh). 결과는 research 문서에 옮긴다
+real_fit/out*/
+real_fit/xmls/
+real_fit/*.log
+
+# 내부 문서. 공개 저장소에 올리지 않는다
+/docs/
+tools/reference_motion_generator/AIROOKIE.md
+tools/reference_obs_provenance.md
+policies/README.md
+playground/open_duck_mini_v2/data/README.md

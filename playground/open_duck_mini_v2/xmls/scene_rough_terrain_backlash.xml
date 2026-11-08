@@ -1,0 +1,52 @@
+<mujoco model="Open Duck Mini V2 rough terrain scene">
+  <!-- <include file="open_duck_mini_v2_no_head.xml"/> -->
+  <include file="open_duck_mini_v2_backlash.xml"/>
+
+  <statistic center="0 0 0.1" extent="0.8" meansize="0.04"/>
+
+  <visual>
+    <rgba force="1 0 0 1"/>
+    <global azimuth="120" elevation="-20"/>
+    <map force="0.01"/>
+    <scale forcewidth="0.3" contactwidth="0.5" contactheight="0.2"/>
+    <quality shadowsize="8192"/>
+  </visual>
+
+  <asset>
+    <!-- https://polyhaven.com/a/rock_face -->
+    <texture type="skybox" builtin="gradient" rgb1="1 1 1" rgb2="1 1 1" width="800" height="800"/>
+        <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="1 1 1" rgb2="1 1 1" markrgb="0 0 0"
+      width="300" height="300"/>
+    <!-- <texture type="2d" name="groundplane" file="assets/rocky_texture.png"/> -->
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance=".8"/>
+    <hfield name="hfield" file="hfield.png" size="10 10 .01 0.1"/>
+  </asset>
+
+  <worldbody>
+    <body name="floor">
+      <geom name="floor" type="hfield" hfield="hfield" material="groundplane" contype="1" conaffinity="0" priority="1"
+        friction="1.0"/>
+    </body>
+  </worldbody>
+
+  <keyframe>
+    <!-- 홈 자세. tools/set_home_pose.py 가 쓴다 — 시범 동작 생성기 프리셋의 서 있는 목표를 푼 다리
+         (오른쪽은 왼쪽 미러, 서보 눈금 단위)와 그 전 홈의 머리 4 축. 몸통 높이는 발바닥이 1 mm 묻히는 높이다. -->
+    <key name="home"
+            qpos="0 0 0.1653 1 0 0 0 0 0 0.001533981 0 0.027611654 0 -0.753184567 0 1.36217494 0 -0.678019508 0 -0.001533981 -0.004601942 0 0.001533981 0 0 -0.001533981 0 -0.027611654 0 0.753184567 0 1.36217494 0 -0.678019508 0"
+      ctrl="0.001533981 0.027611654 -0.753184567 1.36217494 -0.678019508 -0.001533981 -0.004601942 0 0.001533981 -0.001533981 -0.027611654 0.753184567 1.36217494 -0.678019508"/>
+  </keyframe>
+
+    <!-- 발바닥-바닥 접촉 센서.
+         0.0.3 에서는 mujoco_playground._src.collision.geoms_colliding 으로 기하 쌍을
+         직접 질의했으나 0.2.0 에서 그 모듈이 삭제됐다. Warp 백엔드에서는 data.contact
+         배열을 같은 방식으로 주소 지정할 수 없어서 상류가 MJCF 접촉 센서로 옮겼다.
+         이름은 상류 규약 "<geom>_floor_found" 를 따른다.
+         순서는 constants.FEET_GEOMS (왼발, 오른발) 와 같아야 한다. -->
+    <sensor>
+        <contact name="left_foot_bottom_tpu_floor_found" geom1="left_foot_bottom_tpu" geom2="floor"
+            reduce="mindist" num="1" data="found"/>
+        <contact name="right_foot_bottom_tpu_floor_found" geom1="right_foot_bottom_tpu" geom2="floor"
+            reduce="mindist" num="1" data="found"/>
+    </sensor>
+</mujoco>
