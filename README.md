@@ -59,4 +59,4 @@ Tools that talk to the training server (`tools/round_eval/run.sh`) read `SERVER_
 
 This repository is derived from [Open Duck Playground](https://github.com/apirrone/Open_Duck_Playground), the [Open Duck reference motion generator](https://github.com/apirrone/Open_Duck_reference_motion_generator) and [Open Duck Mini](https://github.com/apirrone/Open_Duck_Mini) by Antoine Pirrone, Steve Nguyen and contributors. See [NOTICE](NOTICE) for details. Parts derived from Open Duck Mini are under the Apache License 2.0 ([LICENSE-APACHE](LICENSE-APACHE)).
 
-No open-source license has been chosen yet for the AI Rookie additions; all rights reserved.
+The AI Rookie additions are released under the [MIT License](LICENSE). Code taken from the upstream Open Duck repositories that declare no license is not relicensed.

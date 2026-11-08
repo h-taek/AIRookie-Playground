@@ -59,4 +59,4 @@ uv run playground/open_duck_mini_v2/mujoco_infer.py -o policies/v2/v2_48_300M.on
 
 이 저장소는 Antoine Pirrone, Steve Nguyen 외 기여자의 [Open Duck Playground](https://github.com/apirrone/Open_Duck_Playground), [Open Duck reference motion generator](https://github.com/apirrone/Open_Duck_reference_motion_generator), [Open Duck Mini](https://github.com/apirrone/Open_Duck_Mini) 에서 출발했다. 자세한 내용은 [NOTICE](NOTICE) 에 있다. Open Duck Mini 에서 온 부분은 Apache License 2.0([LICENSE-APACHE](LICENSE-APACHE))을 따른다.
 
-AI Rookie 가 더한 부분에는 아직 오픈소스 라이선스를 정하지 않았다. 모든 권리를 보유한다.
+AI Rookie 가 더한 부분은 [MIT License](LICENSE) 를 따른다. 라이선스를 밝히지 않은 Open Duck 원본 저장소에서 가져온 코드는 다시 라이선스하지 않는다.
